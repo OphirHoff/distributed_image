@@ -1,6 +1,7 @@
 import socket
 import pickle
 import error_msg
+import tcp_by_size
 
 IP = '0.0.0.0'
 PORT = 1234
@@ -12,7 +13,7 @@ class Server:
     def __init__(self) -> None:
         self.sock = socket.socket()
         self.port = PORT
-        self.clients: list[tuple[socket.socket, str]] = []
+        self.clients: dict[int:tuple[socket.socket, str]] = []
     
     
     def initialize_connection(self):
@@ -23,8 +24,14 @@ class Server:
         while len(self.clients) < CLIENTS_NUM:
             
             try:
-                sock, addr = self.sock.accept()
-                self.clients.append((sock, addr))
+                client_sock, addr = self.sock.accept()
+                client_num = tcp_by_size.recv_by_size(client_sock, return_type=int)
+                # Check that recieved num is in range
+                if client_num <= CLIENTS_NUM and client_num > 0:
+                    # Send connection acception
+                    tcp_by_size.send_with_size(client_sock, )
+                self.clients.append((client_sock, addr))
+                
                 print(f"New client connectd.\nActive clients: {self.clients}")
             except socket.timeout:
                 error_msg.ErrorMsg.connect_timeout(addr[0], addr[1])
