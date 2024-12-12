@@ -26,14 +26,13 @@ class Server:
             
             try:
                 client_sock, addr = self.sock.accept()
-                client_num = tcp_by_size.recv_by_size(client_sock, return_type=int)
+                client_num = tcp_by_size.recv_by_size(client_sock)
                 # Check that recieved num is in range
                 if client_num <= CLIENTS_NUM and client_num > 0:
                     # Send connection acception
-                    tcp_by_size.send_with_size(client_sock, f"{protocol.CONN_SUCCEED}")
+                    tcp_by_size.send_with_size(client_sock, protocol.create_msg(protocol.CONN_SUCCEED))
                 self.clients.append((client_sock, addr))
-                
-                print(f"New client connectd.\nActive clients: {self.clients}")
+                print(f"New client connected num: {client_num}.\nActive clients: {self.clients}")
             except socket.timeout:
                 error_msg.ErrorMsg.connect_timeout(addr[0], addr[1])
                 return
