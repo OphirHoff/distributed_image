@@ -2,6 +2,7 @@ import socket
 import pickle
 import error_msg
 import tcp_by_size
+import protocol
 
 IP = '0.0.0.0'
 PORT = 1234
@@ -29,7 +30,7 @@ class Server:
                 # Check that recieved num is in range
                 if client_num <= CLIENTS_NUM and client_num > 0:
                     # Send connection acception
-                    tcp_by_size.send_with_size(client_sock, )
+                    tcp_by_size.send_with_size(client_sock, f"{protocol.CONN_SUCCEED}")
                 self.clients.append((client_sock, addr))
                 
                 print(f"New client connectd.\nActive clients: {self.clients}")
