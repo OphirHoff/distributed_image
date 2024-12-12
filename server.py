@@ -26,7 +26,8 @@ class Server:
             
             try:
                 client_sock, addr = self.sock.accept()
-                client_num = tcp_by_size.recv_by_size(client_sock)
+                client_num = protocol.server_recieve_msg(tcp_by_size.recv_by_size(client_sock))
+                print(client_num)
                 # Check that recieved num is in range
                 if client_num <= CLIENTS_NUM and client_num > 0:
                     # Send connection acception
