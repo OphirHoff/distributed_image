@@ -4,10 +4,11 @@ import error_msg
 import tcp_by_size
 import protocol
 import random
+import loadImage
 
 IP = '0.0.0.0'
 PORT = 1234
-CLIENTS_NUM = 2
+CLIENTS_NUM = 1
 PIECE_SIZE_X = 50
 PIECE_SIZE_Y = 50
 IMG_SIZE_X = 200
@@ -29,7 +30,7 @@ class Server:
     def __init__(self) -> None:
         self.sock = socket.socket()
         self.port = PORT
-        self.clients: dict[int:tuple[socket.socket, str]] = []
+        self.clients: dict[int:tuple[socket.socket, str]] = {}
     
     
     def initialize_connection(self):
@@ -49,7 +50,7 @@ class Server:
                 if client_num <= CLIENTS_NUM and client_num > 0:
                     # Send connection acception
                     tcp_by_size.send_with_size(client_sock, protocol.create_msg(protocol.CONN_SUCCEED))
-                    self.clients.append((client_sock, addr))
+                    self.clients[client_num] = (client_sock, addr)
                     print(f"New client connected num: {client_num}.\nActive clients: {len(self.clients)}")
                 
             except socket.timeout:
@@ -70,20 +71,35 @@ class Server:
     def point_in_area_4(self):
         pass
 
-    def get_piece(self, coords, size: tuple[int, int]=(PIECE_SIZE_X, PIECE_SIZE_Y)):
+    def get_area(self, start_point: tuple[int ,int], end_point: tuple[int, int]):
 
-        x, y = coords
-        point_area = where_is_point(x, y)
+        point_area = where_is_point(start_point)
         globals()[f'point_in_area_{point_area}']()
 
-    def main(self, server):
+
+
+        curr_client_sock: socket.socket = self.clients[1][0]
+        tcp_by_size.send_with_size(curr_client_sock, protocol.create_msg(protocol.REQUEST_CHUNK, str(start_point[0]), str(start_point[1]), str(end_point[0]), str(end_point[1])))
+        response = protocol.server_recieve_msg(tcp_by_size.recv_by_size(curr_client_sock)) # recieve pickled object
+        response = eval(response)
+        data = pickle.loads(response)
+        return data
+
+    def main(self):
         self.initialize_connection()
 
         while True:
 
-            coords: tuple[int, int] = random.randint(0, 200), random.randint(0, 200)
-            
+            # Grill random start point on screen
+            # coords: tuple[int, int] = random.randint(0, 200), random.randint(0, 200)
+
+            start_point = (0, 0)
+            end_point = (50, 50)
+            area = self.get_area(start_point, end_point)
+            loadImage.show_img_from_arr(area)
+            break
+        
 
 if __name__ == "__main__":
     server = Server()
-    server.main(server)
+    server.main()

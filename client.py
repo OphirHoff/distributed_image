@@ -22,7 +22,6 @@ class Client:
     def __init__(self, client_num):
         self.client_num = client_num
         self.sock = socket.socket()
-        self.sock.settimeout(10)
         self.port = PORT
         
     def init_connection(self, server_ip):
@@ -40,6 +39,7 @@ class Client:
             error_msg.ErrorMsg.connect_timeout(server_ip, PORT)
 
     def Handle_request(request):
+        """Handle server's request and respond with proper data."""
         pass
         
 def partOfSquare(array, start_coord: tuple[int, int], end_coord: tuple[int, int]):
@@ -53,7 +53,7 @@ class Square:
     def __init__(self, array: np.array, start_pos: tuple[int, int]):
         self.array: np.array = partOfSquare(array, start_pos, (start_pos[0] + PORTION_SIZE, start_pos[1] + PORTION_SIZE))
         self.start_pos = start_pos
-        
+     
 
 def main(server_ip, client_num: int):
     """
@@ -66,6 +66,7 @@ def main(server_ip, client_num: int):
         client_num = int(client_num)
     except:
         print("Client num must be an integer between 1-4.")
+        exit(1)
 
     # Open image and load using loadImage module
     img_data = loadImage.load_pic_arr(PIC_NAME)
@@ -75,9 +76,18 @@ def main(server_ip, client_num: int):
     client = Client(client_num)
     client.init_connection(server_ip)
 
+    
     while True:
+        # Wait for server request
         request = protocol.client_recieve_msg(tcp_by_size.recv_by_size(client.sock))
 
+        # Cut requested area
+        area = partOfSquare(square.array, request[0], request[1])
+        # Use pickle for transferring
+        pickled_data = pickle.dumps(area)
+
+        # Send to Server
+        tcp_by_size.send_with_size(client.sock, protocol.create_msg(protocol.SEND_SQUARE, data=pickled_data))
 
 if __name__ == "__main__":    
     if len(sys.argv) > 2:
