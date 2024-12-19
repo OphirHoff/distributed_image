@@ -1,4 +1,5 @@
 import numpy as np
+from graphics import ImageLoad
 import socket
 import tcp_by_size, protocol
 import pickle
@@ -69,7 +70,7 @@ def main(server_ip, client_num: int):
         exit(1)
 
     # Open image and load using loadImage module
-    img_data = loadImage.load_pic_arr(PIC_NAME)
+    img_data = ImageLoad.load_pic_arr(PIC_NAME)
     square = Square(img_data, client_start_pos[client_num])
 
     # Connect to server

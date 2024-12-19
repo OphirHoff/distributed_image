@@ -15,7 +15,6 @@ def create_msg(code, *args, data=''):
     for x in args:
         to_return += f"~{str(x)}"
         
-    print(to_return)
     return to_return
 
 

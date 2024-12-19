@@ -1,7 +1,7 @@
 import socket, struct
 
 size_header_size = 8
-TCP_DEBUG = True
+TCP_DEBUG = False
 
 
 def __log(prefix, data, max_to_print=100):
