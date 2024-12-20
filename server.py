@@ -10,7 +10,7 @@ from graphics import ImageLoad, Graphics
 
 IP = '0.0.0.0'
 PORT = 1234
-CLIENTS_NUM = 4
+CLIENTS_NUM = 1
 PIECE_SIZE_X = 50
 PIECE_SIZE_Y = 50
 IMG_SIZE_X = 200

@@ -14,9 +14,9 @@ PORTION_SIZE = 100
 
 client_start_pos = {
     1: (0, 0),
-    2: (100, 0),
-    3: (100, 100),
-    4: (0, 100)
+    2: (PORTION_SIZE, 0),
+    3: (PORTION_SIZE, PORTION_SIZE),
+    4: (0, PORTION_SIZE)
 }
 
 class Client:
@@ -51,8 +51,8 @@ def partOfSquare(array, start_coord: tuple[int, int], end_coord: tuple[int, int]
     return newsquare
 
 class Square:
-    def __init__(self, array: np.array, start_pos: tuple[int, int]):
-        self.array: np.array = partOfSquare(array, start_pos, (start_pos[0] + PORTION_SIZE, start_pos[1] + PORTION_SIZE))
+    def __init__(self, array: np.ndarray, start_pos: tuple[int, int]):
+        self.array: np.ndarray = partOfSquare(array, start_pos, (start_pos[0] + PORTION_SIZE, start_pos[1] + PORTION_SIZE))
         self.start_pos = start_pos
      
 
@@ -72,6 +72,9 @@ def main(server_ip, client_num: int):
     # Open image and load using loadImage module
     img_data = ImageLoad.load_pic_arr(PIC_NAME)
     square = Square(img_data, client_start_pos[client_num])
+
+    ImageLoad.show_img_from_arr(square.array)
+    exit()
 
     # Connect to server
     client = Client(client_num)

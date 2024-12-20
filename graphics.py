@@ -43,8 +43,8 @@ class Graphics:
         self.screen = None
         self.bg_obj: pygame.image = None
         self.pieces = None
-        self.start_pos = [40, 40]
-        self.end_pos = [90, 90]
+        self.start_pos = [51, 51]
+        self.end_pos = [101, 101]
 
     def update_bg(self, new_bg: Image):
         self.bg_obj = ImageLoad.pillow_to_pygame(new_bg)
